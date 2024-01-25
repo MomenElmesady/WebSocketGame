@@ -53,14 +53,14 @@
           console.log("clientId set successfully" + " " + clientId);
         }
 
-        if (response.method === "create"){
+        if (response.method === "create") {
           gameId = response.game.id;
-          btnJoin.value = gameId
-          temporaryMessage = document.createElement('div');
-          temporaryMessage.id = "div0"
-          temporaryMessage.textContent = 'Join the game '+ `${gameId}`;
-          temporaryMessage.style.backgroundColor = "gray"
-          temporaryMessage.style.width = "500px"
+          btnJoin.value = gameId;
+          temporaryMessage = document.createElement("div");
+          temporaryMessage.id = "div0";
+          temporaryMessage.textContent = "Join the game " + `${gameId}`;
+          temporaryMessage.style.backgroundColor = "gray";
+          temporaryMessage.style.width = "500px";
           document.body.appendChild(temporaryMessage);
           console.log(
             "game successfully created with id " +
@@ -72,17 +72,16 @@
         }
         if (response.method === "update") {
           if (!response.game.state) return;
-          for (const b of Object.keys(response.game.state)){
-            const color = response.game.state[b]
-            const ballObject = document.getElementById("ball"+b)
-            ballObject.style.backgroundColor = color
+          for (const b of Object.keys(response.game.state)) {
+            const color = response.game.state[b];
+            const ballObject = document.getElementById("ball" + b);
+            ballObject.style.backgroundColor = color;
           }
         }
 
         if (response.method === "join") {
-          const gameIdDiv = document.getElementById("div0")
-          if (gameIdDiv)
-            document.body.removeChild(gameIdDiv)
+          const gameIdDiv = document.getElementById("div0");
+          if (gameIdDiv) document.body.removeChild(gameIdDiv);
           const game = response.game;
           while (divPlayers.firstChild)
             divPlayers.removeChild(divPlayers.firstChild);
@@ -93,44 +92,42 @@
             d.textContent = c.clientId;
             divPlayers.appendChild(d);
 
-            if (c.clientId === clientId) playerColor = c.color
+            if (c.clientId === clientId) playerColor = c.color;
           });
           while (divBoard.firstChild) divBoard.removeChild(divBoard.firstChild);
           for (let i = 0; i < game.balls; i++) {
             const b = document.createElement("button");
-            b.id = "ball" + (i+1);
-            b.tag = (i + 1);
-            b.textContent = (i+1)
-            b.style.width = "150px"
-            b.style.hight = "150px"
+            b.id = "ball" + (i + 1);
+            b.tag = i + 1;
+            b.textContent = i + 1;
+            b.style.width = "150px";
+            b.style.hight = "150px";
             b.addEventListener("click", (e) => {
               b.style.background = playerColor;
               const payLoad = {
-                "method": "play",
-                "clientId": clientId,
-                "gameId": gameId,
-                "ballId": b.tag,
-                "color": playerColor
-              }
-              ws.send(JSON.stringify(payLoad))
+                method: "play",
+                clientId: clientId,
+                gameId: gameId,
+                ballId: b.tag,
+                color: playerColor,
+              };
+              ws.send(JSON.stringify(payLoad));
             });
             divBoard.appendChild(b);
           }
         }
-        if (response.method === "end"){
-          console.log(response)
-          const endDiv = document.createElement("div")
-          if (response.status === "win"){
-            endDiv.innerText = "Winner Congratulation!"
-            endDiv.style.backgroundColor = "green"
+        if (response.method === "end") {
+          console.log(response);
+          const endDiv = document.createElement("div");
+          if (response.status === "win") {
+            endDiv.innerText = "Winner Congratulation!";
+            endDiv.style.backgroundColor = "green";
+          } else {
+            endDiv.innerText = "Loser !!";
+            endDiv.style.backgroundColor = "orange";
           }
-          else {
-            endDiv.innerText = "Loser !!"
-            endDiv.style.backgroundColor = "orange" 
-          }
-          document.body.appendChild(endDiv)
+          document.body.appendChild(endDiv);
         }
-        
       };
     </script>
   </body>
